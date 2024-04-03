@@ -1,0 +1,34 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      allow-pool-suspension: true
+      auto-commit: true
+      connection-test-query: select 1 from dual
+      connection-timeout: 60000
+      data-source-properties:
+        cache-prep-stmt: true
+        prep-stmt-cache-size: 250
+        prep-stmt-cache-sql-limit: 2048
+        use-server-prep-stmt: true
+      idle-timeout: 600000
+      initialization-fail-timeout: 1
+      keepAlive-time: 60000
+      leak-detection-threshold: 60000
+      login-timeout: 15000
+      max-lifetime: 1800000
+      minimum-idle: 1
+      maximum-pool-size: 15
+      validation-timeout: 15000
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:~/qaH2;AUTO_SERVER=TRUE;
+    username: sa
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
