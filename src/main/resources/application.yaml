@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: api-document
+  devtools:
+    restart:
+      enabled: true
+    add-properties: true
+  h2:
+    console:
+      enable: true
+      path: /h2-console
+      settings.trace: false
+      settings.web-allow-others: false
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui-custom.html
+    operationsSorter: method
+
+logging:
+  level:
+    root: INFO
+    org.springframework: ERROR
+    ecnic.document.*: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      atlas:
+        enabled: false
+  endpoint:
+    restart:
+      enabled: true
+    health:
+      show-details: always
+

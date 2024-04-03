@@ -1,0 +1,52 @@
+server:
+  port: 9091
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: [ PLACEHOLDER ]
+            client-secret: [ PLACEHOLDER ]
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      allow-pool-suspension: true
+      auto-commit: true
+      connection-test-query: select 1
+      connection-timeout: 60000
+      data-source-properties:
+        cache-prep-stmt: true
+        prep-stmt-cache-size: 250
+        prep-stmt-cache-sql-limit: 2048
+        use-server-prep-stmt: true
+      idle-timeout: 600000
+      initialization-fail-timeout: 1
+      keepAlive-time: 60000
+      leak-detection-threshold: 60000
+      login-timeout: 15000
+      max-lifetime: 1800000
+      minimum-idle: 1
+      maximum-pool-size: 15
+      validation-timeout: 15000
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/postgres
+    username: sa
+    password: admin
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      format_sql: true
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+api:
+  security:
+    token:
+      secret: 9a2f8c4e6b0d71f3e8b925a45747f894a3d6bc70fa8d5e21a15a6d8c3b9a0e7c

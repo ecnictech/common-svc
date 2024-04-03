@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Upload Document</title>
+</head>
+<body>
+
+    <h2>Upload Document</h2>
+    <input id="fileUpload" type="file" name="fileUpload"/>
+    <br>
+    <button id="uploadButton" onclick="uploadFile()"> Upload File </button>
+
+    <script>
+        async function uploadFile(){
+            let formData = new FormData();
+            formData.append('data',fileUpload.files[0]);
+            await fetch(
+                'http://localhost:8081/api/v1/document',{
+                method: 'POST', body: formData
+            }).then(result => result.text()).then(text => alert(text));
+        }
+    </script>
+</body>
+</html>
