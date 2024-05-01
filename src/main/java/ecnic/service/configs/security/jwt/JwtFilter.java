@@ -28,13 +28,15 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         var token = this.recoverToken(request);
-        var login = this.jwtService.validateToken(token);
-
-        if (login != null) {
-            var user = this.jwtUserDetailsService.loadUserByUsername(login);
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token != null) {
+            var login = this.jwtService.validateToken(token);
+            if (login != null) {
+                var user = this.jwtUserDetailsService.loadUserByUsername(login);
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 

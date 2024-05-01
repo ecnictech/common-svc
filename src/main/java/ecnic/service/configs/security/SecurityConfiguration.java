@@ -1,18 +1,19 @@
 package ecnic.service.configs.security;
 
+import ecnic.service.configs.security.authentication.StrangerAuthenticationProvider;
 import ecnic.service.configs.security.jwt.JwtFilter;
+import ecnic.service.configs.security.jwt.JwtUserDetailsService;
+import ecnic.service.configs.security.limiter.RateLimitedAuthenticationProvider;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -24,25 +25,21 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
-
 public class SecurityConfiguration {
-    private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
+    private final JwtUserDetailsService jwtUserDetailsService;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtFilter jwtFilter) {
-        this.authenticationProvider = authenticationProvider;
+    public SecurityConfiguration(JwtFilter jwtFilter, JwtUserDetailsService jwtUserDetailsService) {
         this.jwtFilter = jwtFilter;
+        this.jwtUserDetailsService = jwtUserDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationEventPublisher publisher) throws Exception {
         http.getSharedObject(AuthenticationManagerBuilder.class).authenticationEventPublisher(publisher);
-
         return http
-                .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeConfig -> {
-                    authorizeConfig.requestMatchers("/upload").permitAll();
+                    authorizeConfig.requestMatchers("/upload.html").permitAll();
                     authorizeConfig.requestMatchers("/error").permitAll();
                     authorizeConfig.requestMatchers("/actuator/**").permitAll();
                     authorizeConfig.requestMatchers("/swagger-ui.html/**").permitAll();
@@ -52,9 +49,10 @@ public class SecurityConfiguration {
                 .formLogin(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                //.oauth2Login(Customizer.withDefaults())
+                .authenticationProvider(new RateLimitedAuthenticationProvider(new StrangerAuthenticationProvider()))
                 .build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

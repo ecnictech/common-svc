@@ -3,24 +3,18 @@ package ecnic.service.configs.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import ecnic.service.models.entities.EcnicUser;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-@Validated
-@ConfigurationProperties(prefix = "api.security.token")
+@Component
 public class JwtService {
 
-    @NotNull
-    private final String secret;
-
-    JwtService(String secret) {
-        this.secret = secret;
-    }
+    @Value("api.security.token.secret")
+    private String secret;
 
     private final String ISSUER = "auth-api";
 

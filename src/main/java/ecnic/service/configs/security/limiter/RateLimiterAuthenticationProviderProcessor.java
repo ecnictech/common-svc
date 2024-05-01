@@ -3,10 +3,10 @@ package ecnic.service.configs.security.limiter;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 
-public class RateLimiteAuthenticationProviderProcessor<T extends AuthenticationProvider> implements ObjectPostProcessor<T> {
-    private Class<T> clazz;
+public class RateLimiterAuthenticationProviderProcessor<T extends AuthenticationProvider> implements ObjectPostProcessor<T> {
+    private final Class<T> clazz;
 
-    public RateLimiteAuthenticationProviderProcessor(Class<T> clazz) {
+    public RateLimiterAuthenticationProviderProcessor(Class<T> clazz) {
         this.clazz = clazz;
     }
 
